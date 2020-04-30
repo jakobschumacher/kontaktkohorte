@@ -1,0 +1,70 @@
+---
+title: "Auswertung Kontaktkohorte"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+library(googlesheets)
+```
+
+## Creation of dummy data
+```{r dummydata}
+n_group_kp2neg <- 150
+n_group_kp2pos <- 150
+n_group_kp2unknown <- 150
+
+# Typ
+typ_auspraegung <- c("Der Covid-Fall lebt bei mir in der Häuslichkeit", "am Arbeitsplatz", "in einer medizinischen Einrichtung", "Treffen unter Freunden", "Sonstiges")
+typ_verteilung_k2pos <- rep(typ_auspraegung, times = c(201,51,13,1,10))
+typ_verteilung_k2neg <- rep(typ_auspraegung, times = c(100,181,1,21,0))
+typ_verteilung_k2unkown <- rep(typ_auspraegung, times = c(51,51,100,14,100))
+typ = c(sample(typ_verteilung_k2neg, size = n_group_kp2neg), 
+        sample(typ_verteilung_k2pos, size = n_group_kp2pos),
+        sample(typ_verteilung_k2unkown, size = n_group_kp2unknown))
+
+# Kontaktdatum
+# auspraegung_kontaktdatum
+# auspraegung_kontaktdatum_beginn
+# auspraegung_kontaktdatum_ende
+# auspraegung_kontaktdauer_h
+# auspraegung_kp1_erkrankt
+# auspraegung_kp1_symptombeginn
+# auspraegung_kp1_abstrich_erfolgt
+# auspraegung_kp1_abstrich_ergebnis
+# auspraegung_c19f_alter
+# auspraegung_c19f_symptombeginn
+# auspraegung_haushaltskontakt_zimmer
+# auspraegung_outdoor
+# auspraegung_abstand
+# auspraegung_c19f_maske
+# auspraegung_c19f_mns
+# auspraegung_c19f_ffp
+# auspraegung_kp1_maske
+# auspraegung_kp1_MNS
+# auspraegung_kp1_ffp
+# auspraegung_kp1_vorerkrankung
+# auspraegung_kp1_rauchen
+# auspraegung_kp1_oeffi
+
+
+data <- data.frame(
+  id = 1 : (n_group_kp2unknown + n_group_kp2neg + n_group_kp2pos),
+  studygroup = c(rep("unknown", n_group_kp2unknown), rep("pos", n_group_kp2pos), rep("neg", n_group_kp2neg)),
+  typ = typ
+)
+```
+
+## Results Typ
+
+### Grafik
+```{r results}
+ggplot(data %>% count(typ, studygroup), aes(x = typ, y = n, fill = studygroup)) + 
+  geom_col() +
+  facet_wrap(~studygroup) 
+```
+### RR
+```{r}
+# Hier kann die Berechnung für den RR stehen.
+```
+
